@@ -1,0 +1,29 @@
+
+service: s3-notifications # NOTE: update this with your service name
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: dev
+  region: us-east-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource: "*"
+
+package:
+  include:
+    - mailer/**
+
+functions:
+  s3_notification:
+    handler: handler.s3_notification
+    events:
+      - s3:
+        bucket: s3-notification-ahm # Choose unique name
+        event: s3:ObjectCreated:*
+        rules:
+            - suffix: .jpeg
+
+
